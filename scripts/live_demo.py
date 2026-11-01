@@ -46,6 +46,15 @@ def replay(start: str, capital: float):
     return pf
 
 
+def write_feed(pf, path=ROOT / "reports" / "live_feed.json"):
+    """Serie para el dashboard (modo local): se reescribe en cada minuto."""
+    import json
+    h = pf.history
+    path.write_text(json.dumps({"capital": pf.capital, "ts": [str(p["ts"]) for p in h],
+                                "modelo": [round(p["modelo"], 2) for p in h],
+                                "sp500": [round(p["sp500"], 2) for p in h]}))
+
+
 def live(minutes: int, capital: float):
     P, DV, _ = load_daily("us", start="2002-01-01")
     eng = LiveEngine.from_files(str(MODEL), exclude_tickers=crypto_tickers(P.columns)).prepare(P, DV)
@@ -57,6 +66,7 @@ def live(minutes: int, capital: float):
             pf.rebalance(w, prices, ts)
         else:
             pt = pf.on_tick(ts, prices)
+            write_feed(pf)
             print(f"  {ts:%H:%M} modelo={pt['modelo']:.2f} sp500={pt['sp500']:.2f} diff={pt['diff_pct']:+.3f}%",
                   flush=True)
     return pf

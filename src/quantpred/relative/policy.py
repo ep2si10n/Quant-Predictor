@@ -121,13 +121,21 @@ class Policy:
         grad = grad - 2 * self.alpha * th
         return -J, -grad
 
-    def fit(self, d: DailyData, idx, maxiter: int = 300):
+    def fit(self, d: DailyData, idx, maxiter: int = 300, callback=None, theta0=None):
+        """callback(it, objective) se llama en cada iteración de L-BFGS (para el dashboard)."""
         rng = np.random.default_rng(self.seed)
-        th0 = rng.normal(0, 0.01, self.n_params())
-        if self.kind == "linear" and self.gamma >= 1.0:
+        th0 = rng.normal(0, 0.01, self.n_params()) if theta0 is None else np.array(theta0, float)
+        if theta0 is None and self.kind == "linear" and self.gamma >= 1.0:
             th0[self.features.index("is_spy")] = 1.0   # arranque cercano al SPY
+        it = [0]
+
+        def cb(xk):
+            it[0] += 1
+            if callback is not None:
+                callback(it[0], -self.objective(xk, d, idx)[0])
+
         res = minimize(self.objective, th0, args=(d, idx), jac=True, method="L-BFGS-B",
-                       options={"maxiter": maxiter})
+                       options={"maxiter": maxiter}, callback=cb if callback else None)
         self.theta = res.x
         return self
 
@@ -151,20 +159,27 @@ class Policy:
             json.dump(self.to_dict(), fh, indent=1)
 
 
-def simulate(weights: np.ndarray, d: DailyData, idx, cost: float = 2e-4) -> dict:
-    """Backtest exacto: deriva de pesos entre días, coste por rotación, recompensa exacta."""
+def simulate(weights: np.ndarray, d: DailyData, idx, cost: float = 2e-4, band: float = 0.0) -> dict:
+    """Backtest exacto: deriva de pesos entre días, coste por rotación, recompensa exacta.
+    band > 0: banda de no-operación — solo se rebalancea si la distancia L1 entre la cartera actual
+    (tras la deriva) y el objetivo supera `band`; si no, se mantienen las posiciones."""
     R, M, tick, spy = d.R[idx], d.mask[idx], d.tickers[idx], d.spy[idx]
     held: dict = {}
     rp, to = np.zeros(len(idx)), np.zeros(len(idx))
     for t in range(len(idx)):
         tgt = {tick[t, i]: weights[t, i] for i in range(R.shape[1]) if M[t, i] and weights[t, i] > 1e-6}
         keys = set(tgt) | set(held)
-        to[t] = sum(abs(tgt.get(k, 0) - held.get(k, 0)) for k in keys)
-        gross = sum(w * R[t, i] for i, (k, w) in enumerate(
-            (tick[t, i], weights[t, i]) for i in range(R.shape[1])) if M[t, i])
-        rp[t] = gross - cost * to[t]
+        dist = sum(abs(tgt.get(k, 0) - held.get(k, 0)) for k in keys)
+        avail = {tick[t, i]: i for i in range(R.shape[1]) if M[t, i]}
+        if band > 0 and held and dist <= band and all(k in avail for k in held):
+            cur = held                                   # dentro de la banda: no se opera
+            to[t] = 0.0
+        else:
+            cur = tgt
+            to[t] = dist
+        rp[t] = sum(w * R[t, avail[k]] for k, w in cur.items() if k in avail) - cost * to[t]
         # deriva
-        new = {tick[t, i]: weights[t, i] * (1 + R[t, i]) for i in range(R.shape[1]) if M[t, i] and weights[t, i] > 1e-6}
+        new = {k: w * (1 + R[t, avail[k]]) for k, w in cur.items() if k in avail and w > 1e-9}
         tot = sum(new.values())
         held = {k: v / tot for k, v in new.items()} if tot > 0 else {}
     return {"ret": rp, "spy": spy, "turnover": to}

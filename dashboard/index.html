@@ -1,0 +1,302 @@
+<title>Quant-Predictor Monitor</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+Condensed:wght@500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+/* Layout: banda de estado arriba; rejilla de paneles (curva de aprendizaje | experimentos), después validación, test y en vivo a ancho completo. */
+:root {
+  --bg: #eef1f4; --panel: #ffffff; --ink: #16202e; --muted: #5c6878; --line: #d5dbe2;
+  --accent: #1d5f8a; --bench: #9a6b2f; --alt: #6b5b95; --good: #1e7d4f; --bad: #b4412f; --warn: #a77a12;
+  --chip: #e3e9ef;
+  --f-display: "IBM Plex Sans Condensed", "Arial Narrow", sans-serif;
+  --f-body: "IBM Plex Sans", system-ui, sans-serif;
+  --f-mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #0f141a; --panel: #161d26; --ink: #e6ebf0; --muted: #93a0b0; --line: #27313d;
+  --accent: #5fa8d6; --bench: #d0a465; --alt: #a594d1; --good: #4cc38a; --bad: #e3735e; --warn: #e0b54a;
+  --chip: #202a35; color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #0f141a; --panel: #161d26; --ink: #e6ebf0; --muted: #93a0b0; --line: #27313d;
+  --accent: #5fa8d6; --bench: #d0a465; --alt: #a594d1; --good: #4cc38a; --bad: #e3735e; --warn: #e0b54a;
+  --chip: #202a35; color-scheme: dark }
+body { background: var(--bg); color: var(--ink); font-family: var(--f-body); font-size: 14px; line-height: 1.45; }
+.wrap { padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 20px 40px; max-width: 1280px; margin: 0 auto; display: grid; gap: 16px; }
+header { display: grid; gap: 10px; }
+.titlebar { display: flex; flex-wrap: wrap; align-items: baseline; gap: 10px 18px; }
+h1 { font-family: var(--f-display); font-weight: 600; font-size: 26px; margin: 0; letter-spacing: .01em; text-wrap: balance; }
+h2 { font-family: var(--f-display); font-weight: 600; font-size: 17px; margin: 0; letter-spacing: .02em; }
+.sub { color: var(--muted); font-size: 13px; }
+.pill { font-family: var(--f-mono); font-size: 12px; padding: 2px 10px; border-radius: 999px; background: var(--chip); color: var(--muted); }
+.pill.running { color: var(--warn); } .pill.finished { color: var(--good); } .pill.stale { color: var(--bad); }
+.kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 10px; }
+.kpi { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px; display: grid; gap: 2px; min-width: 0; }
+.kpi .lbl { font-size: 11px; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); }
+.kpi .val { font-family: var(--f-mono); font-size: 20px; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+.bar { height: 6px; background: var(--chip); border-radius: 3px; overflow: hidden; }
+.bar > i { display: block; height: 100%; background: var(--accent); width: 0; transition: width .4s; }
+.grid2 { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: 16px; }
+@media (max-width: 860px) { .grid2 { grid-template-columns: minmax(0, 1fr); } }
+section { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 14px 16px; display: grid; gap: 10px; min-width: 0; align-content: start; }
+.head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 8px; }
+.chart { position: relative; height: 290px; }
+.chart.tall { height: 340px; }
+select { font: inherit; font-size: 13px; padding: 3px 6px; border-radius: 6px; border: 1px solid var(--line); background: var(--panel); color: var(--ink); }
+select:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.tbl { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+th { text-align: right; font-weight: 500; color: var(--muted); font-size: 11px; text-transform: uppercase; letter-spacing: .06em; padding: 4px 6px; border-bottom: 1px solid var(--line); white-space: nowrap; }
+th:first-child, td:first-child, th.l, td.l { text-align: left; }
+td { text-align: right; padding: 5px 6px; border-bottom: 1px solid var(--line); font-family: var(--f-mono); font-variant-numeric: tabular-nums; white-space: nowrap; }
+td.l { font-family: var(--f-body); white-space: normal; min-width: 140px; }
+tr.best td { background: color-mix(in srgb, var(--accent) 12%, transparent); }
+tr.sel td:first-child { box-shadow: inset 3px 0 0 var(--accent); }
+tbody tr { cursor: pointer; }
+.pos { color: var(--good); } .neg { color: var(--bad); }
+.dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 6px; vertical-align: 1px; background: var(--muted); }
+.dot.training { background: var(--warn); animation: pulse 1.2s infinite; } .dot.done { background: var(--good); }
+@keyframes pulse { 50% { opacity: .3 } }
+@media (prefers-reduced-motion: reduce) { .dot.training { animation: none; } .bar > i { transition: none; } }
+.empty { color: var(--muted); font-size: 13px; padding: 24px 8px; text-align: center; border: 1px dashed var(--line); border-radius: 8px; }
+.note { color: var(--muted); font-size: 12px; }
+.legend { display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: 12px; color: var(--muted); }
+.legend span::before { content: ""; display: inline-block; width: 14px; height: 3px; border-radius: 2px; margin-right: 6px; vertical-align: 3px; background: var(--c); }
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="titlebar">
+      <h1>Quant-Predictor · cartera vs S&amp;P 500</h1>
+      <span id="status" class="pill">conectando…</span>
+      <span id="source" class="sub"></span>
+    </div>
+    <div class="sub" id="phase">Esperando datos del entrenamiento.</div>
+    <div class="bar" aria-label="progreso"><i id="progbar"></i></div>
+    <div class="kpis">
+      <div class="kpi"><span class="lbl">Experimentos</span><span class="val" id="k-n">–</span></div>
+      <div class="kpi"><span class="lbl">Entrenando ahora</span><span class="val" id="k-cur">–</span></div>
+      <div class="kpi"><span class="lbl">Mejor recompensa 21d (valid.)</span><span class="val" id="k-best">–</span></div>
+      <div class="kpi"><span class="lbl">Retorno activo del mejor</span><span class="val" id="k-act">–</span></div>
+      <div class="kpi"><span class="lbl">Última actualización</span><span class="val" id="k-upd">–</span></div>
+    </div>
+  </header>
+
+  <div class="grid2">
+    <section>
+      <div class="head"><h2>Curva de aprendizaje</h2>
+        <label class="sub" for="expsel">Experimento <select id="expsel"></select></label></div>
+      <div class="chart"><canvas id="c-learn"></canvas></div>
+      <div class="note">Objetivo J(θ) = recompensa media f(Δ) − α‖θ‖² en cada iteración de L-BFGS. Cada color es un pliegue del walk-forward (año que se predice).</div>
+    </section>
+    <section>
+      <div class="head"><h2>Experimentos (validación 2016-2018)</h2><span class="sub">clic en una fila para ver su curva</span></div>
+      <div class="tbl"><table>
+        <thead><tr><th>Id</th><th class="l">Cambio respecto a la base</th><th>Recomp. 21d</th><th>Activo/año</th><th>IR</th><th>TE</th><th>Bate 21d</th></tr></thead>
+        <tbody id="exptbody"><tr><td colspan="7" class="l note">Aún no hay experimentos.</td></tr></tbody>
+      </table></div>
+    </section>
+  </div>
+
+  <section>
+    <div class="head"><h2>Validación: riqueza relativa frente al S&amp;P 500</h2>
+      <span class="sub">valor 1,0 = igual que el SPY; por encima, lo bate</span></div>
+    <div class="chart"><canvas id="c-val"></canvas></div>
+  </section>
+
+  <section>
+    <div class="head"><h2>Test fuera de muestra (2019 → hoy, reentrenamiento anual)</h2><span class="sub" id="selcfg"></span></div>
+    <div id="test-empty" class="empty">El test se ejecuta una sola vez, al terminar la búsqueda. Aparecerá aquí.</div>
+    <div id="test-body" hidden>
+      <div class="legend" id="test-legend"></div>
+      <div class="chart tall"><canvas id="c-test"></canvas></div>
+      <div class="tbl"><table>
+        <thead><tr><th>Estrategia</th><th>CAGR</th><th>Activo/año</th><th>TE</th><th>IR</th><th>Sharpe</th><th>Máx. caída</th><th>Caída rel.</th><th>Bate 21d</th></tr></thead>
+        <tbody id="testtbody"></tbody>
+      </table></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="head"><h2>En vivo: modelo vs S&amp;P 500 (minuto a minuto)</h2><span class="sub" id="live-meta"></span></div>
+    <div id="live-empty" class="empty">Sin sesión en vivo. Arráncala con <code>python scripts/live_demo.py --yahoo 390</code>: cada minuto se añade un punto.</div>
+    <div id="live-body" hidden><div class="chart"><canvas id="c-live"></canvas></div></div>
+  </section>
+  <p class="note">Fuente: <code>reports/training_progress.json</code> generado por <code>scripts/train_relative_v2.py</code>. Recompensa: f(Δ) = Δ + 0,5·máx(Δ,0) − 50·mín(Δ,0)², con Δ = rendimiento de la cartera − rendimiento del SPY en 21 días.</p>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.js"></script>
+<script>
+(() => {
+  const S = { meta: null, exps: {}, final: null, live: null, sel: null, userSel: false };
+  const $ = (id) => document.getElementById(id);
+  const css = (v) => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
+  const pct = (x, d = 1) => x == null ? "–" : (x * 100).toFixed(d) + "%";
+  const num = (x, d = 2) => x == null ? "–" : Number(x).toFixed(d);
+  const cls = (x) => x == null ? "" : x > 0 ? "pos" : x < 0 ? "neg" : "";
+  const FOLD = ["--accent", "--bench", "--alt", "--good"];
+  const charts = {};
+
+  function baseOpts(yfmt) {
+    const ink = css("--muted"), grid = css("--line");
+    return { responsive: true, maintainAspectRatio: false, animation: false, interaction: { mode: "index", intersect: false },
+      plugins: { legend: { labels: { color: ink, boxWidth: 12, font: { size: 11 } } },
+                 tooltip: { callbacks: yfmt ? { label: (c) => `${c.dataset.label}: ${yfmt(c.parsed.y)}` } : {} } },
+      scales: { x: { ticks: { color: ink, maxTicksLimit: 8, maxRotation: 0, font: { size: 11 } }, grid: { color: grid } },
+                y: { ticks: { color: ink, font: { size: 11 }, callback: yfmt ? (v) => yfmt(v) : undefined }, grid: { color: grid } } } };
+  }
+  function chart(id, type, opts) {
+    if (!window.Chart) return null;
+    if (!charts[id]) charts[id] = new Chart($(id), { type, data: { labels: [], datasets: [] }, options: opts });
+    return charts[id];
+  }
+  const line = (label, data, color, w = 2, extra = {}) => ({ label, data, borderColor: color, backgroundColor: color,
+    borderWidth: w, pointRadius: 0, tension: 0.15, spanGaps: true, ...extra });
+
+  // ---------- normalización (JSON local o documentos del artifact) ----------
+  function normExp(e) {
+    let it = e.iters || [];
+    if (!Array.isArray(it) || (it.length && !Array.isArray(it[0])))
+      it = (e.iters_J || []).map((J, i) => [i + 1, J, (e.iters_fold || [])[i] || ""]);
+    let vc = e.val_curve;
+    return { ...e, iters: it, val_curve: vc };
+  }
+  function diffLabel(cfg) {
+    const base = Object.values(S.exps).find((e) => e.round === 0);
+    if (!base || !cfg) return "";
+    if (cfg === base.config) return `base (${cfg.universe}, features ${cfg.features}, ${cfg.kind}, γ=${cfg.gamma})`;
+    const d = Object.entries(cfg).filter(([k, v]) => String(base.config[k]) !== String(v)).map(([k, v]) => `${k}: ${base.config[k]} → ${v}`);
+    return d.length ? d.join(", ") : "= base";
+  }
+
+  // ---------- render ----------
+  function render() {
+    const m = S.meta || {};
+    const st = $("status");
+    const age = m.updated ? (Date.now() - new Date(m.updated.replace(" ", "T")).getTime()) / 1000 : null;
+    st.textContent = m.status === "finished" ? "terminado" : m.status === "running" ? "entrenando" : "sin datos";
+    st.className = "pill " + (m.status === "finished" ? "finished" : m.status === "running" ? (age != null && age > 600 ? "stale" : "running") : "");
+    $("phase").textContent = m.phase || "Esperando datos del entrenamiento.";
+    const exps = Object.values(S.exps).filter((e) => e.round !== 99).sort((a, b) => a.id.localeCompare(b.id));
+    $("k-n").textContent = m.n_total ? `${m.n_done ?? exps.filter((e) => e.status === "done").length} / ${m.n_total}` : exps.length || "–";
+    $("progbar").style.width = m.n_total ? Math.min(100, 100 * (m.n_done || 0) / m.n_total) + "%" : "0";
+    $("k-cur").textContent = m.current || (m.status === "finished" ? "—" : "–");
+    $("k-best").textContent = m.best ? `${num(m.best.Reward21_bp, 1)} pb` : "–";
+    $("k-act").textContent = m.best ? pct(m.best.Active_ann) : "–";
+    $("k-act").className = "val " + cls(m.best && m.best.Active_ann);
+    $("k-upd").textContent = m.updated ? m.updated.slice(11) : "–";
+
+    // selector
+    const sel = $("expsel");
+    const all = Object.values(S.exps).sort((a, b) => a.id.localeCompare(b.id));
+    if (!S.userSel) S.sel = m.current || (m.best && m.best.id) || (all[all.length - 1] || {}).id;
+    const opts = all.map((e) => `<option value="${e.id}" ${e.id === S.sel ? "selected" : ""}>${e.id}${e.status === "training" ? " (entrenando)" : ""}</option>`).join("");
+    if (sel.innerHTML !== opts) sel.innerHTML = opts;
+
+    // tabla
+    const bestId = m.best && m.best.id;
+    $("exptbody").innerHTML = exps.length ? exps.map((e) => {
+      const v = e.val || {};
+      return `<tr data-id="${e.id}" class="${e.id === bestId ? "best" : ""} ${e.id === S.sel ? "sel" : ""}">
+        <td><span class="dot ${e.status}"></span>${e.id}</td><td class="l">${diffLabel(e.config)}</td>
+        <td class="${cls(v.Reward21_bp)}">${num(v.Reward21_bp, 1)}</td><td class="${cls(v.Active_ann)}">${pct(v.Active_ann)}</td>
+        <td>${num(v.IR)}</td><td>${pct(v.TE)}</td><td>${pct(v.Hit21d, 0)}</td></tr>`;
+    }).join("") : `<tr><td colspan="7" class="l note">Aún no hay experimentos.</td></tr>`;
+
+    // curva de aprendizaje
+    const e = S.exps[S.sel];
+    const cl = chart("c-learn", "line", baseOpts((v) => (v * 1e4).toFixed(1) + " pb"));
+    if (cl && e) {
+      const folds = [...new Set(e.iters.map((r) => r[2] || ""))];
+      let n = 0;
+      cl.data.labels = e.iters.map(() => ++n);
+      cl.data.datasets = folds.map((f, k) => line(f ? `pliegue ${f}` : "entrenamiento",
+        e.iters.map((r) => (r[2] || "") === f ? r[1] : null), css(FOLD[k % FOLD.length])));
+      cl.update();
+    }
+
+    // validación (riqueza relativa)
+    const cv = chart("c-val", "line", baseOpts((v) => v.toFixed(3)));
+    const done = exps.filter((x) => x.val_curve && x.val_curve.fecha);
+    if (cv && done.length) {
+      cv.data.labels = done[0].val_curve.fecha;
+      cv.data.datasets = done.map((x) => line(x.id, x.val_curve.rel,
+        x.id === bestId ? css("--accent") : css("--muted"), x.id === bestId ? 2.6 : 1,
+        { borderColor: x.id === bestId ? css("--accent") : css("--muted") + "88" }));
+      cv.data.datasets.push(line("S&P 500", done[0].val_curve.fecha.map(() => 1), css("--bench"), 1.5, { borderDash: [5, 4] }));
+      cv.update();
+    }
+
+    // test
+    const f = S.final;
+    $("test-empty").hidden = !!f; $("test-body").hidden = !f;
+    if (f && f.curves) {
+      const palette = { "Modelo v2 (ganador)": css("--accent"), "Referencia v1 (solo EEUU)": css("--alt"), "S&P 500 (SPY)": css("--bench") };
+      const keys = Object.keys(f.curves).filter((k) => k !== "fecha");
+      const ct = chart("c-test", "line", baseOpts((v) => "×" + v.toFixed(2)));
+      if (ct) { ct.data.labels = f.curves.fecha;
+        ct.data.datasets = keys.map((k) => line(k, f.curves[k], palette[k] || css("--muted"), k.startsWith("Modelo") ? 2.6 : 1.6));
+        ct.options.plugins.legend.display = false; ct.update(); }
+      $("test-legend").innerHTML = keys.map((k) => `<span style="--c:${palette[k] || css("--muted")}">${k}</span>`).join("");
+      $("testtbody").innerHTML = (f.metrics || []).map((r) => `<tr><td class="l">${r.strategy}</td><td>${pct(r.CAGR)}</td>
+        <td class="${cls(r.Active_ann)}">${pct(r.Active_ann)}</td><td>${pct(r.TE)}</td><td>${num(r.IR)}</td><td>${num(r.Sharpe)}</td>
+        <td>${pct(r.MaxDD)}</td><td>${pct(r.MaxRelDD)}</td><td>${pct(r.Hit21d, 0)}</td></tr>`).join("");
+      $("selcfg").textContent = f.selected ? "ganador: " + diffLabel(f.selected) : "";
+    }
+
+    // en vivo
+    const L = S.live;
+    const has = L && L.ts && L.ts.length;
+    $("live-empty").hidden = !!has; $("live-body").hidden = !has;
+    if (has) {
+      const cl2 = chart("c-live", "line", baseOpts((v) => v.toFixed(2) + "%"));
+      const r1 = L.modelo.map((v) => (v / L.capital - 1) * 100), r2 = L.sp500.map((v) => (v / L.capital - 1) * 100);
+      if (cl2) { cl2.data.labels = L.ts.map((t) => String(t).slice(11, 16));
+        cl2.data.datasets = [line("Modelo", r1, css("--accent"), 2.4), line("S&P 500", r2, css("--bench"), 1.8)]; cl2.update(); }
+      const dl = r1[r1.length - 1] - r2[r2.length - 1];
+      $("live-meta").innerHTML = `diferencia: <b class="${cls(dl)}">${dl >= 0 ? "+" : ""}${dl.toFixed(3)}%</b> · ${L.ts.length} min`;
+    }
+  }
+
+  document.addEventListener("click", (ev) => {
+    const tr = ev.target.closest("tbody#exptbody tr[data-id]");
+    if (tr) { S.sel = tr.dataset.id; S.userSel = true; render(); }
+  });
+  $("expsel").addEventListener("change", (ev) => { S.sel = ev.target.value; S.userSel = true; render(); });
+  matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => { Object.values(charts).forEach((c) => c.destroy()); for (const k in charts) delete charts[k]; render(); });
+
+  // ---------- fuentes de datos ----------
+  function applyLocal(js) {
+    S.meta = js.meta; S.final = js.final;
+    S.exps = {}; (js.experiments || []).forEach((e) => { S.exps[e.id] = normExp(e); });
+    render();
+  }
+  async function poll() {
+    try {
+      const r = await fetch("training_progress.json?t=" + Date.now(), { cache: "no-store" });
+      if (r.ok) applyLocal(await r.json());
+    } catch (_) { /* sin archivo local */ }
+    try {
+      const r = await fetch("live_feed.json?t=" + Date.now(), { cache: "no-store" });
+      if (r.ok) { S.live = await r.json(); render(); }
+    } catch (_) { /* sin sesión en vivo */ }
+  }
+  async function start() {
+    render();
+    const db = window.claude && window.claude.use ? await window.claude.use("db").catch(() => null) : null;
+    if (db) {
+      $("source").textContent = "datos en directo (claude.ai)";
+      const timer = setTimeout(() => { $("source").textContent = "no se pudo contactar con los datos todavía"; }, 10000);
+      const ok = () => { clearTimeout(timer); $("source").textContent = "datos en directo (claude.ai)"; };
+      db.doc("progress/meta").onSnapshot((s) => { ok(); S.meta = s.exists ? s.data() : null; render(); }, () => ok());
+      db.doc("progress/final").onSnapshot((s) => { S.final = s.exists ? s.data() : null; render(); });
+      db.doc("progress/live").onSnapshot((s) => { S.live = s.exists ? s.data() : null; render(); });
+      db.collection("experiments").onSnapshot((q) => { S.exps = {}; q.docs.forEach((d) => { S.exps[d.id] = normExp({ id: d.id, ...d.data() }); }); render(); });
+    } else {
+      $("source").textContent = "modo local (lee reports/training_progress.json cada 2 s)";
+      poll(); setInterval(poll, 2000);
+    }
+  }
+  start();
+})();
+</script>
