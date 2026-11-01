@@ -7,8 +7,8 @@ para una cartera ficticia, al estilo de los algoritmos de los fondos quant.
 | # | Fase | Estado |
 |---|---|---|
 | 1 | Ingesta: universo amplio de ETFs (todas las clases de activo) + macro + datos alternativos | ✅ |
-| 2 | Investigación: papers, foros y estudios sobre las mejores técnicas | ⏳ |
-| 3 | Estudio propio: split temporal train/test y comparación de estrategias | ⏳ |
+| 2 | Investigación: papers, foros y estudios sobre las mejores técnicas | ✅ |
+| 3 | Estudio propio: split temporal train/test y comparación de estrategias | ✅ |
 | 4 | Análisis de fallos e iteración hasta que no haya mejora | ⏳ |
 | 5 | Exportar modelo descargable + informe matemático | ⏳ |
 
