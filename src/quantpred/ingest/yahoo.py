@@ -17,6 +17,7 @@ import requests
 
 UA = "Mozilla/5.0 (research; quant-predictor)"
 PAUSE = 0.35  # s entre peticiones por hilo (cortesía; Yahoo limita con 429)
+PERIOD1_MIN = -2208988800  # 1900-01-01
 HOSTS = ["query1.finance.yahoo.com", "query2.finance.yahoo.com"]
 _local = threading.local()
 
@@ -61,9 +62,13 @@ def _get_json(path: str, params: dict, retries: int = 6) -> dict:
 # --- Precios -----------------------------------------------------------------------------------
 def chart(symbol: str, range_: str = "max") -> tuple[pd.DataFrame, dict]:
     """OHLCV diario + adj_close + eventos. Devuelve (df largo de un ticker, meta)."""
-    js = _get_json(f"/v8/finance/chart/{symbol}",
-                   {"range": range_, "interval": "1d", "events": "div,splits,capitalGains",
-                    "includeAdjustedClose": "true"})
+    # range=max degrada a mensual en algunos mercados (p.ej. Xetra) -> period1/period2 explícitos
+    params = {"interval": "1d", "events": "div,splits,capitalGains", "includeAdjustedClose": "true"}
+    if range_ == "max":
+        params.update(period1=PERIOD1_MIN, period2=int(time.time()) + 86400)
+    else:
+        params["range"] = range_
+    js = _get_json(f"/v8/finance/chart/{symbol}", params)
     res = (js.get("chart") or {}).get("result")
     if not res:
         return pd.DataFrame(), {}

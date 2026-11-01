@@ -18,7 +18,8 @@ import pyarrow.parquet as pq
 
 from quantpred.config import MAX_PARQUET_MB, META, PROCESSED
 
-PRICES_DIR = PROCESSED / "etf_prices"
+PRICES_DIR = PROCESSED / "etf_prices"        # EEUU (USD)
+REGION_DIRS = {"us": PRICES_DIR, "eu": PROCESSED / "etf_prices_eu"}  # eu = Xetra UCITS (EUR mayoritario)
 
 
 def _write(df: pd.DataFrame, path: Path) -> float:
@@ -28,7 +29,8 @@ def _write(df: pd.DataFrame, path: Path) -> float:
     return path.stat().st_size / 2**20
 
 
-def write_prices(prices: pd.DataFrame, meta: pd.DataFrame) -> pd.DataFrame:
+def write_prices(prices: pd.DataFrame, meta: pd.DataFrame, region: str = "us") -> pd.DataFrame:
+    PRICES_DIR = REGION_DIRS[region]
     cls = meta.set_index("yahoo")["asset_class"]
     prices = prices.assign(asset_class=prices["ticker"].map(cls).fillna("equity"))
     if PRICES_DIR.exists():
@@ -54,8 +56,12 @@ def write_prices(prices: pd.DataFrame, meta: pd.DataFrame) -> pd.DataFrame:
 
 
 def load_prices(asset_classes: list[str] | None = None, tickers: list[str] | None = None,
-                columns: list[str] | None = None) -> pd.DataFrame:
-    """Carga precios en formato largo. Filtra por clase de activo y/o tickers."""
+                columns: list[str] | None = None, region: str = "us") -> pd.DataFrame:
+    """Carga precios en formato largo. region: 'us', 'eu' o 'all'. Filtra por clase y/o tickers."""
+    if region == "all":
+        return pd.concat([load_prices(asset_classes, tickers, columns, r) for r in REGION_DIRS],
+                         ignore_index=True)
+    PRICES_DIR = REGION_DIRS[region]
     filters = []
     if asset_classes:
         filters.append(("asset_class", "in", asset_classes))
@@ -73,8 +79,10 @@ def load_panel(field: str = "adj_close", **kw) -> pd.DataFrame:
     return df.pivot(index="date", columns="ticker", values=field).sort_index()
 
 
-def load_metadata() -> pd.DataFrame:
-    return pd.read_parquet(META / "etf_metadata.parquet")
+def load_metadata(region: str = "us") -> pd.DataFrame:
+    if region == "all":
+        return pd.concat([load_metadata(r) for r in REGION_DIRS], ignore_index=True)
+    return pd.read_parquet(META / ("etf_metadata.parquet" if region == "us" else f"etf_metadata_{region}.parquet"))
 
 
 def load_macro(source: str = "yahoo") -> pd.DataFrame:

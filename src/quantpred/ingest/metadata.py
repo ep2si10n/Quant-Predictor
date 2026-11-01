@@ -166,9 +166,24 @@ def fetch_summaries(symbols: list[str], workers: int = 2, pause: float = 0.25,
     return pd.DataFrame([done[s] for s in symbols if s in done])
 
 
+def _xetra_override(asset_class: str, group: str | None, itype: str | None, name: str) -> str:
+    """En Xetra el grupo de producto es fiable para bonos (RENTEN) y ETCs (materias primas)."""
+    g = (group or "").upper()
+    if asset_class in ("leveraged_inverse", "volatility", "crypto"):
+        return asset_class
+    if "RENTEN" in g:
+        return "fixed_income"
+    if itype == "ETC" or "COMMODITIES" in g:
+        return "crypto" if re.search(r"bitcoin|ether|crypto|solana|xrp|btc|eth", name.lower()) else "commodity"
+    return asset_class
+
+
 def build_metadata(universe: pd.DataFrame, chart_meta: pd.DataFrame | None = None,
-                   summaries: pd.DataFrame | None = None, save: bool = True) -> pd.DataFrame:
+                   summaries: pd.DataFrame | None = None, save: bool = True,
+                   region: str = "us") -> pd.DataFrame:
     meta = universe.copy()
+    if "currency" in meta:
+        meta = meta.rename(columns={"currency": "trading_currency"})
     if chart_meta is not None and not chart_meta.empty:
         cm = chart_meta[["yahoo", "longName", "instrumentType", "fullExchangeName", "currency", "firstTradeDate"]]
         meta = meta.merge(cm, on="yahoo", how="left")
@@ -185,11 +200,16 @@ def build_metadata(universe: pd.DataFrame, chart_meta: pd.DataFrame | None = Non
     meta = pd.concat([meta, flags], axis=1)
     meta["asset_class"] = [classify(c, n) for c, n in zip(meta["category"], full_name)]
     meta["class_source"] = meta["category"].notna().map({True: "morningstar_category", False: "name_rules"})
+    if "xetra_group" in meta:
+        meta["asset_class"] = [_xetra_override(a, g, t, n) for a, g, t, n in
+                               zip(meta["asset_class"], meta["xetra_group"], meta["instrument_type"], full_name)]
+    meta["region"] = region
     cat = meta["category"].fillna("")
     meta.loc[cat.str.startswith("Trading--Leveraged"), "is_leveraged"] = True
     meta.loc[cat.str.startswith("Trading--Inverse"), "is_inverse"] = True
     if save:
         META.mkdir(parents=True, exist_ok=True)
-        meta.to_parquet(META / "etf_metadata.parquet", index=False)
-        meta.to_csv(META / "etf_metadata.csv", index=False)
+        sfx = "" if region == "us" else f"_{region}"
+        meta.to_parquet(META / f"etf_metadata{sfx}.parquet", index=False)
+        meta.to_csv(META / f"etf_metadata{sfx}.csv", index=False)
     return meta

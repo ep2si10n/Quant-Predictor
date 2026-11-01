@@ -15,6 +15,7 @@ para una cartera ficticia, al estilo de los algoritmos de los fondos quant.
 ## Dataset (Fase 1)
 - **~5.800 ETFs/ETNs cotizados en EEUU** (acciones EEUU/internacionales, sectores, factores, bonos,
   materias primas, divisas, REITs, cripto, volatilidad, apalancados, alternativos), histórico diario completo.
+- **~3.600 ETFs/ETCs/ETNs europeos UCITS** (lista oficial Xetra, deduplicados por ISIN).
 - **~75 series de mercado de historia larga** (índices mundiales, futuros, divisas, tipos, volatilidad).
 - **~74 series macro FRED** y **~260 series alternativas** (factores Fama-French y AQR, predictores
   Goyal-Welch, CAPE, estructura temporal de volatilidad Cboe, posicionamiento CFTC, sentimiento,
@@ -26,7 +27,8 @@ Estado y decisiones: [`docs/PROJECT_STATE.md`](docs/PROJECT_STATE.md).
 ## Uso
 ```bash
 pip install -r requirements.txt
-python scripts/run_ingestion.py              # universo + precios + metadatos + QA + macro (reanudable)
+scripts/run_all.sh                            # EEUU + Europa UCITS + macro Yahoo (reanudable)
+python scripts/run_ingestion.py --region eu   # solo una región
 PYTHONPATH=src python -m quantpred.ingest.alt_data   # datos alternativos
 python -m pytest -q tests
 ```
