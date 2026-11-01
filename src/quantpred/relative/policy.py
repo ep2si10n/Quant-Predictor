@@ -35,13 +35,31 @@ class Policy:
     reward_params: dict = field(default_factory=lambda: dict(rw.DEFAULT))
     horizon: int = 21               # días de la ventana de rendimiento relativo
     gamma: float = 1.0              # fracción satélite: w = (1-γ)·SPY + γ·softmax (SPY = hueco 0)
+    gate: bool = False              # γ_t = σ(S_t·g) aprendido según el régimen (S = estado de mercado)
     theta: np.ndarray | None = None
     seed: int = 0
 
     # ---------------- parámetros ----------------
-    def n_params(self):
+    N_STATE = 4                     # S_t = [1, VIX_z, SPY21_z, |SPY21_z|]
+
+    def n_score(self):
         F = len(self.features)
         return F if self.kind == "linear" else F * self.hidden + self.hidden + self.hidden
+
+    def n_params(self):
+        return self.n_score() + (self.N_STATE if self.gate else 0)
+
+    def _split(self, th):
+        n = self.n_score()
+        return th[:n], (th[n:] if self.gate else None)
+
+    def gammas(self, S, th=None):
+        """γ_t por fecha (vector) o escalar fijo."""
+        th = self.theta if th is None else th
+        if not self.gate:
+            return None
+        _, gp = self._split(th)
+        return 1 / (1 + np.exp(-(S @ gp)))
 
     def _unpack(self, th):
         F, H = len(self.features), self.hidden
@@ -55,6 +73,7 @@ class Policy:
     # ---------------- forward ----------------
     def scores(self, X, th=None):
         th = self.theta if th is None else th
+        th = self._split(th)[0]
         if self.kind == "linear":
             return X @ th, None
         W1, b1, w2 = self._unpack(th)
@@ -68,15 +87,17 @@ class Policy:
         e = np.where(mask, np.exp(s), 0.0)
         return e / e.sum(axis=1, keepdims=True)
 
-    def weights(self, X, mask, th=None):
+    def weights(self, X, mask, th=None, S=None):
         ws = self.softmax(self.scores(X, th)[0], mask)
-        return self._core(ws)
+        return self._core(ws, self.gammas(S, th) if self.gate else None)
 
-    def _core(self, ws):
-        if self.gamma >= 1.0:
-            return ws
-        w = self.gamma * ws
-        w[:, 0] += 1 - self.gamma
+    def _core(self, ws, gt=None):
+        if gt is None:
+            if self.gamma >= 1.0:
+                return ws
+            gt = np.full(len(ws), self.gamma)
+        w = gt[:, None] * ws
+        w[:, 0] += 1 - gt
         return w
 
     # ---------------- objetivo y gradiente ----------------
@@ -85,7 +106,8 @@ class Policy:
         T = len(idx)
         s, Hh = self.scores(X, th)
         ws = self.softmax(s, M)
-        w = self._core(ws)
+        gt = self.gammas(d.S[idx], th) if self.gate else None
+        w = self._core(ws, gt)
         same = np.zeros_like(M)
         same[1:] = (tick[1:] == tick[:-1]) & M[1:] & M[:-1]
         wprev = np.zeros_like(w)
@@ -106,17 +128,22 @@ class Policy:
         g = fp[:, None] * (R - self.cost * sg)
         g[:-1] += np.where(same[1:], fp[1:, None] * self.cost * sg[1:], 0.0)
         g /= T
-        ds = self.gamma * ws * (g - (ws * g).sum(1, keepdims=True))
+        gam = gt if gt is not None else np.full(T, min(self.gamma, 1.0))
+        ds = gam[:, None] * ws * (g - (ws * g).sum(1, keepdims=True))
         ds = np.where(M, ds, 0.0)
+        ths, gp = self._split(th)
         if self.kind == "linear":
             grad = np.einsum("tn,tnf->f", ds, X)
         else:
-            W1, b1, w2 = self._unpack(th)
+            W1, b1, w2 = self._unpack(ths)
             g_w2 = np.einsum("tn,tnh->h", ds, Hh)
             dH = ds[..., None] * w2 * (1 - Hh ** 2)
             g_W1 = np.einsum("tnf,tnh->fh", X, dH)
             g_b1 = dH.sum((0, 1))
             grad = np.concatenate([g_W1.ravel(), g_b1, g_w2])
+        if self.gate:   # ∂J/∂γ_t = Σ_i g_ti (ws_ti − e0_i);  ∂γ_t/∂g = γ_t(1−γ_t)·S_t
+            dgam = (ws * g).sum(1) - g[:, 0]
+            grad = np.concatenate([grad, (dgam * gt * (1 - gt)) @ d.S[idx]])
         J = f.mean() - self.alpha * (th ** 2).sum()
         grad = grad - 2 * self.alpha * th
         return -J, -grad
@@ -125,8 +152,12 @@ class Policy:
         """callback(it, objective) se llama en cada iteración de L-BFGS (para el dashboard)."""
         rng = np.random.default_rng(self.seed)
         th0 = rng.normal(0, 0.01, self.n_params()) if theta0 is None else np.array(theta0, float)
-        if theta0 is None and self.kind == "linear" and self.gamma >= 1.0:
+        if theta0 is None and self.kind == "linear" and self.gamma >= 1.0 and not self.gate:
             th0[self.features.index("is_spy")] = 1.0   # arranque cercano al SPY
+        if theta0 is None and self.gate:              # γ inicial = self.gamma
+            gm = min(max(self.gamma, 0.05), 0.95)
+            th0[self.n_score():] = 0.0
+            th0[self.n_score()] = np.log(gm / (1 - gm))
         it = [0]
 
         def cb(xk):
@@ -144,13 +175,13 @@ class Policy:
         return {"kind": self.kind, "hidden": self.hidden, "features": self.features,
                 "theta": self.theta.tolist(), "alpha": self.alpha, "cost": self.cost,
                 "reward_params": self.reward_params, "horizon": self.horizon,
-                "gamma": self.gamma}
+                "gamma": self.gamma, "gate": self.gate}
 
     @classmethod
     def from_dict(cls, dct):
         p = cls(features=dct["features"], kind=dct["kind"], hidden=dct["hidden"], alpha=dct["alpha"],
                 cost=dct["cost"], reward_params=dct["reward_params"], horizon=dct.get("horizon", 1),
-                gamma=dct.get("gamma", 1.0))
+                gamma=dct.get("gamma", 1.0), gate=dct.get("gate", False))
         p.theta = np.asarray(dct["theta"])
         return p
 
