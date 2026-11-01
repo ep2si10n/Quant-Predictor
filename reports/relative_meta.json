@@ -1,0 +1,46 @@
+{
+  "selected": {
+    "kind": "linear",
+    "alpha": 0.0001,
+    "variant": "g1.0_c0.0002",
+    "reward_params": {
+      "kappa": 0.5,
+      "lam": 50.0,
+      "k": 200.0
+    },
+    "gamma": 1.0,
+    "train_cost": 0.0002,
+    "excluded_classes": [
+      "crypto"
+    ]
+  },
+  "n_assets": 80,
+  "train_end_production": "2026-10-29",
+  "n_trials": 12,
+  "runtime_min": 1.9,
+  "linear_coefficients": {
+    "is_spy": 0.1558,
+    "r1": -0.2765,
+    "r5": -1.4923,
+    "r21": -0.4246,
+    "r63": 0.3513,
+    "r126": 0.1455,
+    "r252": -0.4085,
+    "a5": -1.4923,
+    "a21": -0.4248,
+    "a63": 0.3512,
+    "a252": -0.409,
+    "vol21": 1.9564,
+    "vol63": -0.8456,
+    "beta63": 0.9993,
+    "corr63": 3.161,
+    "ma50": -0.6728,
+    "ma200": -1.9327,
+    "dd252": 4.9635,
+    "rsi14": -0.9112,
+    "beta_x_vix": 1.3368,
+    "beta_x_spy21": -0.3115,
+    "a21_x_vix": -1.1024,
+    "vol_x_vix": -0.8556
+  }
+}

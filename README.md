@@ -12,6 +12,10 @@ para una cartera ficticia, al estilo de los algoritmos de los fondos quant.
 | 4 | Análisis de fallos e iteración hasta que no haya mejora | ⏳ |
 | 5 | Exportar modelo descargable + informe matemático | ⏳ |
 
+## Objetivo actual
+Cartera simulada de ETFs que intenta **batir al S&P 500**, entrenada con datos diarios y valorada
+**minuto a minuto** frente al SPY (`src/quantpred/live`). Resumen: [`reports/RELATIVE_SUMMARY.md`](reports/RELATIVE_SUMMARY.md).
+
 ## Dataset (Fase 1)
 - **~5.800 ETFs/ETNs cotizados en EEUU** (acciones EEUU/internacionales, sectores, factores, bonos,
   materias primas, divisas, REITs, cripto, volatilidad, apalancados, alternativos), histórico diario completo.
