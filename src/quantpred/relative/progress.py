@@ -29,8 +29,15 @@ def _clean(o):
 
 
 class Progress:
-    def __init__(self, path: Path, n_total: int = 0):
+    def __init__(self, path: Path, n_total: int = 0, resume: bool = False):
         self.path = Path(path)
+        if resume and self.path.exists():
+            self.state = json.loads(self.path.read_text())
+            self.state["meta"].update(status="running", n_total=self.state["meta"]["n_done"] + n_total)
+            self.state["final"] = None
+            self._last = 0.0
+            self.flush(force=True)
+            return
         self.state = {"meta": {"status": "running", "started": time.strftime("%Y-%m-%d %H:%M:%S"),
                                "updated": None, "phase": "", "current": None, "n_done": 0,
                                "n_total": n_total, "best": None},

@@ -235,9 +235,10 @@ tbody tr { cursor: pointer; }
       const keys = Object.keys(f.curves).filter((k) => k !== "fecha");
       const ct = chart("c-test", "line", baseOpts((v) => "×" + v.toFixed(2)));
       if (ct) { ct.data.labels = f.curves.fecha;
-        ct.data.datasets = keys.map((k) => line(k, f.curves[k], palette[k] || css("--muted"), k.startsWith("Modelo") ? 2.6 : 1.6));
+        const colorOf = (k) => palette[k] || (k.startsWith("Modelo") ? css("--accent") : css("--muted"));
+        ct.data.datasets = keys.map((k) => line(k, f.curves[k], colorOf(k), k.startsWith("Modelo") ? 2.6 : 1.6));
         ct.options.plugins.legend.display = false; ct.update(); }
-      $("test-legend").innerHTML = keys.map((k) => `<span style="--c:${palette[k] || css("--muted")}">${k}</span>`).join("");
+      $("test-legend").innerHTML = keys.map((k) => `<span style="--c:${palette[k] || (k.startsWith("Modelo") ? css("--accent") : css("--muted"))}">${k}</span>`).join("");
       $("testtbody").innerHTML = (f.metrics || []).map((r) => `<tr><td class="l">${r.strategy}</td><td>${pct(r.CAGR)}</td>
         <td class="${cls(r.Active_ann)}">${pct(r.Active_ann)}</td><td>${pct(r.TE)}</td><td>${num(r.IR)}</td><td>${num(r.Sharpe)}</td>
         <td>${pct(r.MaxDD)}</td><td>${pct(r.MaxRelDD)}</td><td>${pct(r.Hit21d, 0)}</td></tr>`).join("");
