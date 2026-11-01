@@ -1,0 +1,58 @@
+#,Name,Description,Frequency,SampleBeg,SampleEnd,Notes
+1,date,,,,,
+2,price,price (index value),Monthly,187101.0,202512.0,
+3,d12,12-month dividends,Monthly,187101.0,202512.0,
+4,e12,12-month earnings,Monthly,187101.0,202512.0,
+5,ret,return w/ dividends (CRSP calc),Monthly,192601.0,202512.0,CRSP's calculation of S&P500 return (incl. dividends)
+6,retx,return w/o dividends (CRSP calc),Monthly,192601.0,202512.0,CRSP's calculation of S&P500 return (excl. dividends)
+7,AAA,AAA bond yield,Monthly,191901.0,202512.0,
+8,BAA,BAA bond yield,Monthly,187101.0,202512.0,
+9,lty,long govt yield,Monthly,187101.0,202512.0,
+10,ltr,long govt return,Monthly,192601.0,202512.0,
+11,corpr,corporate bond return,Monthly,192601.0,202512.0,
+12,tbl,t-bill,Monthly,192001.0,202512.0,
+13,Rfree,riskfree return,Monthly,187102.0,202512.0,
+14,d/p,dividend price ratio,Monthly,187101.0,202512.0,= d12/price
+15,d/y,dividend yield,Monthly,187101.0,202512.0,= d12/lag price
+16,e/p,earnings price ratio,Monthly,187101.0,202512.0,= e12/price
+17,d/e,dividend payout,Monthly,187101.0,202512.0,= d12/e12
+18,b/m,b/m,Monthly,192103.0,202512.0,
+19,tms,term spread,Monthly,187101.0,202512.0,= lty - tbl
+20,dfy,default yield spread,Monthly,187101.0,202512.0,= BAA - AAA
+21,dfr,default return spread,Monthly,187101.0,202512.0,= corpr - ltr
+22,infl,inflation,Monthly,191302.0,202512.0,
+23,eqis,pct equity issuance,Annual,1927.0,2025.0,
+24,ntis,net equity issuance,Monthly,192612.0,202512.0,
+25,svar,$\sigma^2$,Monthly,188502.0,202512.0,
+26,cay,"cnsm, wlth, incm",Quarterly,19521.0,20244.0,Needs recomputation every period. Only full-sample version here.
+27,i/k,invstmt/capital,Quarterly,19471.0,20254.0,
+28,csp,cross-sectional premium,Monthly,193705.0,200212.0,
+29,pce,consumption/trend,Quarterly,19534.0,20254.0,Needs recomputation every period. Only full-sample version here.
+30,vp,variance premium,Monthly,199001.0,202112.0,
+31,impvar,implied $\sigma^2$,Monthly,199601.0,202508.0,
+32,vrp,$\sigma^2$ risk premium,Monthly,199001.0,202412.0,
+33,govik,public sector investmt,Quarterly,19471.0,20254.0,
+34,lzrt,9 illiq measures,Monthly,192601.0,202512.0,
+35,skew,skewness,Semiannual,19512.0,20192.0,
+36,crdstd,credit standards,Quarterly,19902.0,20254.0,
+37,ogap,prdctn-output gap,Monthly,192601.0,202512.0,Needs recomputation every period. Only full-sample version here.
+38,wtexas,oil price changes,Monthly,192601.0,202512.0,
+39,accrul,accruals,Annual,1965.0,2025.0,
+40,cfacc,accruals (CFO),Annual,1965.0,2025.0,
+41,sntm,distilled sentiment,Monthly,196507.0,202311.0,"PLS variable. Needs to be computed very period for the forecasting target, and for the frequency of forecast for OOS. Only the full-sample version for predicting monthly log excess returns here."
+42,ndrbl,new order-ship durables,Monthly,195802.0,202512.0,
+43,skvw,avg stock skewness,Monthly,192607.0,202512.0,
+44,tail,x-sect tail risk,Monthly,192607.0,202512.0,
+45,fbm,b/m x-sect factor,Monthly,192606.0,202512.0,"PLS variable. Needs to be computed very period for the forecasting target, and for the frequency of forecast for OOS. Only the full-sample version for predicting monthly log excess returns here."
+46,dtoy,to Dow 52-week high,Monthly,192601.0,202512.0,
+47,dtoat,to Dow all-time high,Monthly,192601.0,202512.0,
+48,ygap,stock-bond yield gap,Monthly,195304.0,202512.0,
+49,rdsp,stock return dispersion,Monthly,192609.0,202512.0,
+50,rsvix,scaled risk-neutral vix,Monthly,199601.0,202508.0,"Comes in three varieties fore predicting monthly, quarterly, and annual forecasts. Only the version for predicting at monthly frequency here."
+51,gpce,yearend econ growth,Annual,1947.0,2025.0,
+52,gip,yearend econ growth,Annual,1926.0,2025.0,
+53,tchi,14 technical indicators,Monthly,195101.0,202512.0,Needs recomputation every period. Only full-sample version here.
+54,house,housing/consumption,Annual,1929.0,2025.0,
+55,avgcor,acvg corr stock returns,Monthly,192603.0,202412.0,
+56,shtint,short interest,Monthly,197301.0,202512.0,Needs recomputation every period. Only full-sample version here.
+57,disag,analyst disagreement,Monthly,198112.0,202512.0,
