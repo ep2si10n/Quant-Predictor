@@ -1,0 +1,104 @@
+{
+  "scripts/run_ingestion.py": {
+    "mtime": 1793562524.0310948,
+    "seen": 1793563490.971553,
+    "ast_hash": "7948d2cf4b5efc77f62b563f967349c9",
+    "semantic_hash": ""
+  },
+  "src/quantpred/__init__.py": {
+    "mtime": 1793562231.2532744,
+    "seen": 1793563490.9715624,
+    "ast_hash": "5acccd5d17bdef57fbc5a359c7383755",
+    "semantic_hash": ""
+  },
+  "src/quantpred/config.py": {
+    "mtime": 1793563306.4186275,
+    "seen": 1793563490.971567,
+    "ast_hash": "9a412d94c61d5f360f070c904eaa9527",
+    "semantic_hash": ""
+  },
+  "src/quantpred/ingest/__init__.py": {
+    "mtime": 1793562232.1052742,
+    "seen": 1793563490.9715693,
+    "ast_hash": "95ac4fbd067abf475acc94521df1f0e6",
+    "semantic_hash": ""
+  },
+  "src/quantpred/ingest/alt_data.py": {
+    "mtime": 1793563270.6480303,
+    "seen": 1793563490.9715707,
+    "ast_hash": "3b1c349d305dd7e25da7bbc4af6d2c5f",
+    "semantic_hash": ""
+  },
+  "src/quantpred/ingest/macro.py": {
+    "mtime": 1793563306.4193046,
+    "seen": 1793563490.971572,
+    "ast_hash": "957a49bc6d99a1a3d66f80d81d2cda75",
+    "semantic_hash": ""
+  },
+  "src/quantpred/ingest/metadata.py": {
+    "mtime": 1793563429.1588755,
+    "seen": 1793563490.9715736,
+    "ast_hash": "04c6c8edac75f1d8da2c0e3c30976faf",
+    "semantic_hash": ""
+  },
+  "src/quantpred/ingest/prices.py": {
+    "mtime": 1793563155.4822729,
+    "seen": 1793563490.9715745,
+    "ast_hash": "941e777b6cc53b82a9043e2cff0b90ee",
+    "semantic_hash": ""
+  },
+  "src/quantpred/ingest/quality.py": {
+    "mtime": 1793562286.413273,
+    "seen": 1793563490.9715757,
+    "ast_hash": "e227a3cb481486431e4f5ea7d6c30c7c",
+    "semantic_hash": ""
+  },
+  "src/quantpred/ingest/store.py": {
+    "mtime": 1793562300.2692728,
+    "seen": 1793563490.971577,
+    "ast_hash": "9f95f30698a5f383f4dc655933f6cfe8",
+    "semantic_hash": ""
+  },
+  "src/quantpred/ingest/universe.py": {
+    "mtime": 1793562241.7772741,
+    "seen": 1793563490.9715781,
+    "ast_hash": "cdc2b1aad5fb4be6fd290d9f4f961846",
+    "semantic_hash": ""
+  },
+  "src/quantpred/ingest/yahoo.py": {
+    "mtime": 1793563155.4817555,
+    "seen": 1793563490.9715796,
+    "ast_hash": "b02b374c48ce52cfd8fb483867e21923",
+    "semantic_hash": ""
+  },
+  "tests/test_ingest.py": {
+    "mtime": 1793563370.1812482,
+    "seen": 1793563490.9715807,
+    "ast_hash": "b04551b388ae85a94c04d96ebb340e13",
+    "semantic_hash": ""
+  },
+  "CLAUDE.md": {
+    "mtime": 1793563357.3372486,
+    "seen": 1793563490.9715817,
+    "ast_hash": "26b09e8b88682fa57db8e236edfee785",
+    "semantic_hash": ""
+  },
+  "README.md": {
+    "mtime": 1793563480.3692458,
+    "seen": 1793563490.9715827,
+    "ast_hash": "7e1d28348c372267c029aaf148289d28",
+    "semantic_hash": ""
+  },
+  "docs/DATA.md": {
+    "mtime": 1793563467.621246,
+    "seen": 1793563490.971584,
+    "ast_hash": "862fc9df37ecb1c9bf4971106f05a768",
+    "semantic_hash": ""
+  },
+  "requirements.txt": {
+    "mtime": 1793562416.3812702,
+    "seen": 1793563490.971585,
+    "ast_hash": "8e1e4f402f7acda2288daadacc53f022",
+    "semantic_hash": ""
+  }
+}

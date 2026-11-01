@@ -1,0 +1,16 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+.pytest_cache/
+.ipynb_checkpoints/
+*.egg-info/
+# Datos crudos (regenerables con scripts/run_ingestion.py)
+data/raw/
+# Graphify: se versiona graph.json + GRAPH_REPORT.md; caches y html no
+graphify-out/cache/
+graphify-out/*.html
+graphify-out/.graphify_*
+graphify-out/memory/
+# Claude local
+.claude/settings.local.json
