@@ -15,3 +15,6 @@ graphify-out/memory/
 # Claude local
 .claude/settings.local.json
 data/processed/study_*
+reports/training_progress.json
+reports/training_progress.tmp
+reports/live_feed.json
