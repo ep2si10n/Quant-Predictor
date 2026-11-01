@@ -1,0 +1,99 @@
+{
+  "winner": "R3_smooth=3",
+  "config": {
+    "target": "t_cls_sharpe",
+    "model": "none",
+    "smooth": 1,
+    "k": 10,
+    "trend": true,
+    "scheme": "ivol",
+    "vt": 0.08,
+    "sleeves": [
+      "equity",
+      "fixed_income",
+      "commodity",
+      "real_estate"
+    ]
+  },
+  "history": [
+    {
+      "round": 0,
+      "cfg": {
+        "target": "t_rel",
+        "model": "lgbm",
+        "smooth": 1,
+        "k": 5,
+        "trend": false,
+        "scheme": "erc",
+        "vt": null,
+        "sleeves": [
+          "equity",
+          "fixed_income",
+          "commodity",
+          "real_estate"
+        ]
+      },
+      "dev_sharpe": -0.07288990136040283
+    },
+    {
+      "round": 1,
+      "cfg": {
+        "target": "t_cls_sharpe",
+        "model": "none",
+        "smooth": 1,
+        "k": 5,
+        "trend": true,
+        "scheme": "ivol",
+        "vt": 0.08,
+        "sleeves": [
+          "equity",
+          "fixed_income",
+          "commodity",
+          "real_estate"
+        ]
+      },
+      "dev_sharpe": 0.4650935850548407
+    },
+    {
+      "round": 2,
+      "cfg": {
+        "target": "t_cls_sharpe",
+        "model": "none",
+        "smooth": 1,
+        "k": 10,
+        "trend": true,
+        "scheme": "ivol",
+        "vt": 0.08,
+        "sleeves": [
+          "equity",
+          "fixed_income",
+          "commodity",
+          "real_estate"
+        ]
+      },
+      "dev_sharpe": 0.5283726686699449
+    },
+    {
+      "round": 3,
+      "cfg": {
+        "target": "t_cls_sharpe",
+        "model": "none",
+        "smooth": 1,
+        "k": 10,
+        "trend": true,
+        "scheme": "ivol",
+        "vt": 0.08,
+        "sleeves": [
+          "equity",
+          "fixed_income",
+          "commodity",
+          "real_estate"
+        ]
+      },
+      "dev_sharpe": 0.5283726686699449
+    }
+  ],
+  "n_trials_total": 65,
+  "pbo_phase4_dev": 0.8253968253968254,
+  "runtime_min": 7.0
+}

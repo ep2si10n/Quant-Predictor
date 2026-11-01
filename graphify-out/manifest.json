@@ -96,9 +96,9 @@
     "semantic_hash": ""
   },
   "requirements.txt": {
-    "mtime": 1793562416.3812702,
-    "seen": 1793563490.971585,
-    "ast_hash": "8e1e4f402f7acda2288daadacc53f022",
+    "mtime": 1793565661.461196,
+    "seen": 1793568334.8104284,
+    "ast_hash": "bd3d1d8abb08baa69f3c54dcee1c815b",
     "semantic_hash": ""
   },
   "scripts/run_all.sh": {
@@ -117,6 +117,78 @@
     "mtime": 1793564354.5586262,
     "seen": 1793564364.0395167,
     "ast_hash": "91bafe02808f7c3d760c4f422a672ae1",
+    "semantic_hash": ""
+  },
+  "scripts/run_phase4.py": {
+    "mtime": 1793567456.2811549,
+    "seen": 1793568334.8103437,
+    "ast_hash": "4f838c6c33c731dba00a46811a3622c1",
+    "semantic_hash": ""
+  },
+  "scripts/run_study.py": {
+    "mtime": 1793567201.9748907,
+    "seen": 1793568334.8103476,
+    "ast_hash": "61a7f17a9ee8bea441a85546cfc8f381",
+    "semantic_hash": ""
+  },
+  "src/quantpred/research/__init__.py": {
+    "mtime": 1793565567.3326218,
+    "seen": 1793568334.8103938,
+    "ast_hash": "dfbea2a3db3c7151069587f44ba5af22",
+    "semantic_hash": ""
+  },
+  "src/quantpred/research/backtest.py": {
+    "mtime": 1793567725.9463425,
+    "seen": 1793568334.8103967,
+    "ast_hash": "abe8b499c9d530ff19700189e74b15e2",
+    "semantic_hash": ""
+  },
+  "src/quantpred/research/features.py": {
+    "mtime": 1793566590.062219,
+    "seen": 1793568334.8103988,
+    "ast_hash": "be2630a65b3a123b40e5e94cac137d0b",
+    "semantic_hash": ""
+  },
+  "src/quantpred/research/metrics.py": {
+    "mtime": 1793565486.9852,
+    "seen": 1793568334.8104002,
+    "ast_hash": "f1e952c88093f67a732d3151c60cbaba",
+    "semantic_hash": ""
+  },
+  "src/quantpred/research/phase4.py": {
+    "mtime": 1793567717.3495774,
+    "seen": 1793568334.8104024,
+    "ast_hash": "56fff4dd0ff11360b37fb869f6f8a98c",
+    "semantic_hash": ""
+  },
+  "src/quantpred/research/portfolio.py": {
+    "mtime": 1793567006.363169,
+    "seen": 1793568334.810404,
+    "ast_hash": "1a1e4e86b2d7fe7d2f374e9f4b9d0487",
+    "semantic_hash": ""
+  },
+  "docs/RESEARCH.md": {
+    "mtime": 1793565429.9252012,
+    "seen": 1793568334.8104236,
+    "ast_hash": "16ec1aabec2b5ecfdbbf842cc44326b8",
+    "semantic_hash": ""
+  },
+  "reports/phase3_results.md": {
+    "mtime": 1793567371.8098218,
+    "seen": 1793568334.8104255,
+    "ast_hash": "3aee5a638bca2aabe6ac311a37fdec35",
+    "semantic_hash": ""
+  },
+  "reports/phase3_equity.png": {
+    "mtime": 1793567371.7811568,
+    "seen": 1793568334.8104308,
+    "ast_hash": "762e29fbc6d7221ef04ad49c5e375000",
+    "semantic_hash": ""
+  },
+  "reports/phase4_equity.png": {
+    "mtime": 1793568147.3931391,
+    "seen": 1793568334.810433,
+    "ast_hash": "af32ef75d692cbc876349117bb32da9a",
     "semantic_hash": ""
   }
 }

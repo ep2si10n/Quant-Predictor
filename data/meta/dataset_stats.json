@@ -1,0 +1,54 @@
+{
+  "n_etfs_universe": 5776,
+  "n_etfs_with_prices": 5776,
+  "n_rows": 8430329,
+  "date_min": "1986-04-03",
+  "date_max": "2026-10-30",
+  "median_years": 2.88,
+  "n_etfs_10y_plus": 1234,
+  "n_etfs_20y_plus": 288,
+  "by_asset_class": {
+    "alternative": {
+      "tickers": 762,
+      "rows": 579624
+    },
+    "commodity": {
+      "tickers": 112,
+      "rows": 261003
+    },
+    "crypto": {
+      "tickers": 140,
+      "rows": 64748
+    },
+    "currency": {
+      "tickers": 8,
+      "rows": 38881
+    },
+    "equity": {
+      "tickers": 2834,
+      "rows": 5033892
+    },
+    "fixed_income": {
+      "tickers": 937,
+      "rows": 1316217
+    },
+    "leveraged_inverse": {
+      "tickers": 795,
+      "rows": 843405
+    },
+    "multi_asset": {
+      "tickers": 120,
+      "rows": 121169
+    },
+    "real_estate": {
+      "tickers": 61,
+      "rows": 153138
+    },
+    "volatility": {
+      "tickers": 7,
+      "rows": 18252
+    }
+  },
+  "missing_tickers": 0,
+  "runtime_min": 25.4
+}
