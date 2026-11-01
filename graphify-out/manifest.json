@@ -114,9 +114,9 @@
     "semantic_hash": ""
   },
   "docs/PROJECT_STATE.md": {
-    "mtime": 1793564354.5586262,
-    "seen": 1793564364.0395167,
-    "ast_hash": "91bafe02808f7c3d760c4f422a672ae1",
+    "mtime": 1793568707.0649753,
+    "seen": 1793568708.2745054,
+    "ast_hash": "a969eb4b8d206f476f382c99f72a421a",
     "semantic_hash": ""
   },
   "scripts/run_phase4.py": {
@@ -189,6 +189,30 @@
     "mtime": 1793568147.3931391,
     "seen": 1793568334.810433,
     "ast_hash": "af32ef75d692cbc876349117bb32da9a",
+    "semantic_hash": ""
+  },
+  "scripts/run_phase4b.py": {
+    "mtime": 1793568644.1891277,
+    "seen": 1793568708.274425,
+    "ast_hash": "9bfe2ab478ba2d61178c18ee4d1eaa81",
+    "semantic_hash": ""
+  },
+  "src/quantpred/research/regime.py": {
+    "mtime": 1793568588.169129,
+    "seen": 1793568708.2744913,
+    "ast_hash": "6f92b62318a42d0cb217769bac99f57a",
+    "semantic_hash": ""
+  },
+  "reports/PHASE4_SUMMARY.md": {
+    "mtime": 1793568707.0451262,
+    "seen": 1793568708.2745106,
+    "ast_hash": "849f48b92663c8c830e6d7f6655c5823",
+    "semantic_hash": ""
+  },
+  "reports/phase4b_equity.png": {
+    "mtime": 1793568664.309127,
+    "seen": 1793568708.2745235,
+    "ast_hash": "ed98673fa0c516d00484232dfdb15c51",
     "semantic_hash": ""
   }
 }

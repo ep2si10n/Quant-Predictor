@@ -28,10 +28,14 @@ Predictor quant de ETFs + estrategia para cartera ficticia. 5 fases (ver README)
 - OAS ICE BofA en FRED solo 3 años → usar Baa-Aaa / `gw_dfy` para historia larga.
 - Macro revisada (no vintages ALFRED).
 
-## Próximo: Fase 2 — Investigación de técnicas
-Candidatas a revisar: TSMOM/cross-sectional momentum, risk parity/HRP, Black-Litterman, modelos de
-regímenes (HMM), GBDT (LightGBM) con features cross-asset, redes (LSTM/Transformer) para series,
-ensembles, Kelly fraccional, meta-labeling y triple barrier (López de Prado), shrinkage de covarianzas.
+## Fases 2-4 ✅ (ver reports/PHASE4_SUMMARY.md)
+- F2: docs/RESEARCH.md. F3: run_study.py (20 estrategias). F4: run_phase4.py (selección dos niveles).
+  F4b: run_phase4b.py (vol HAR + régimen + MLP). 125 intentos registrados.
+- Robusto: predicción de vol HAR; 60/40 vol-managed baja drawdown. No robusto: selección ML,
+  clasificadores de régimen (AUC~0,5), combos elegidos en dev (PBO 0,60).
+- Decisión F5: modelo = 60/40 + gestión de volatilidad HAR, L=1.
+
+## Próximo: Fase 5 — exportar modelo (paquete + señal mensual) e informe matemático.
 
 ## Herramientas agente
 Graphify (`graphify query`), Caveman (respuestas cortas). Hook SessionStart reinstala deps.
