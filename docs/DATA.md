@@ -1,6 +1,7 @@
 # Fase 1 — Dataset: fuentes, diccionario y justificación
 
-Regenerar todo: `python scripts/run_ingestion.py` (precios+macro) y `python -m quantpred.ingest.alt_data` (alternativos).
+Regenerar todo: `scripts/run_all.sh` (EEUU + Europa UCITS + macro Yahoo) y
+`PYTHONPATH=src python -m quantpred.ingest.alt_data` (alternativos + FRED vía `macro.fetch_fred`).
 Cargar: `from quantpred.ingest.store import load_prices, load_panel, load_metadata, load_macro`.
 
 ## 1. Universo de ETFs (activos invertibles)
@@ -9,11 +10,25 @@ Cargar: `from quantpred.ingest.store import load_prices, load_panel, load_metada
 |---|---|
 | Fuente del universo | NASDAQ Trader `nasdaqtraded.txt`: todos los valores negociados en EEUU con flag `ETF=Y` (NASDAQ, NYSE, NYSE Arca, Cboe BZX, IEX…) |
 | Tamaño | ~5.800 ETFs/ETNs/ETPs (acciones EEUU e internacionales, sectores, factores, bonos de todo tipo, materias primas, divisas, inmobiliario, cripto, volatilidad, apalancados/inversos, alternativos, multi-activo) |
-| Precios | Yahoo Finance `v8/chart`, diario, `range=max` (desde 1993 para SPY) |
+| Precios | Yahoo Finance `v8/chart`, diario, `period1=1900` (desde 1993 para SPY); guardia que rechaza series no diarias |
 | Campos | `open high low close adj_close volume dividends splits capital_gains` |
 | Clasificación | `asset_class` ∈ {equity, fixed_income, commodity, real_estate, currency, volatility, crypto, multi_asset, alternative, leveraged_inverse}; categoría Morningstar cuando Yahoo la sirve (`class_source`), si no reglas por nombre. Flags `is_leveraged`, `is_inverse`, `is_etn` |
 | Almacenamiento | `data/processed/etf_prices/asset_class=<clase>/part-XX.parquet` (zstd, <90 MB/fichero) |
 | QA | `data/meta/quality_report.csv` por ticker: fechas, filas, outliers (>40%/día), % días sin negociación, volumen $ mediano, dividendos, splits |
+
+### 1b. Universo europeo UCITS — `data/processed/etf_prices_eu/`
+| Elemento | Detalle |
+|---|---|
+| Fuente | Lista oficial de instrumentos negociables de **Xetra** (Deutsche Börse), mayor mercado de ETPs UCITS de Europa |
+| Tamaño | ~3.600 (≈3.070 ETFs, 205 ETCs, 360 ETNs), deduplicados por ISIN |
+| Precios | Yahoo `<mnemónico>.DE`; si no existe, mismo ISIN en otra plaza (Frankfurt, Ámsterdam, París, Milán, Londres, SIX…) vía búsqueda por ISIN (`yahoo_resolved_by_isin`) |
+| Divisa | Mayoritariamente EUR (columna `currency` en `etf_metadata_eu`); convertir con `EURUSD=X` antes de mezclar con EEUU |
+| Clasificación | Reglas por nombre completo (Yahoo) + grupo de producto Xetra (RENTEN→renta fija, ETC→materias primas) |
+| Carga | `load_prices(region="eu")`, `load_metadata("eu")`, o `region="all"` |
+
+Ventajas: ETFs acumulativos, exposiciones europeas (bonos euro, sectores Stoxx), ETCs físicos de metales.
+Muchos replican los mismos índices que los de EEUU → útil para validación cruzada, pero cuidado con
+duplicar exposiciones al combinar regiones (deduplicar por índice/benchmark en la fase de selección).
 
 **Por qué un universo tan amplio**: el modelo necesita ver todas las clases de activo y regímenes para
 aprender relaciones cross-asset (bonos vs. acciones, dólar vs. commodities, etc.) y después seleccionar

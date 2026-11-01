@@ -4,7 +4,8 @@
 Predictor quant de ETFs + estrategia para cartera ficticia. 5 fases (ver README).
 
 ## Fase actual: 1 — Ingesta ✅ (2026-11-01)
-- Universo: NASDAQ Trader, todos los ETFs/ETNs EEUU (~5.8k). Precios Yahoo `v8/chart` range=max.
+- Universo EEUU: NASDAQ Trader, todos los ETFs/ETNs (~5.8k). Universo EU: Xetra UCITS (~3.6k, por ISIN).
+- Precios Yahoo `v8/chart` con period1 explícito (range=max degradaba a semanal/mensual → guardia anti no-diario).
 - Macro: ~75 series Yahoo (índices, futuros, FX, vol) + ~74 FRED.
 - Alternativos (`data/processed/alt/`): Ken French, AQR, Goyal-Welch-Zafirov, Shiller, Cboe, CFTC COT
   (legacy/disagg/TFF), AAII, Baker-Wurgler, GPR, ACM term premium, GSCPI, ADS, SF Fed news sentiment.
@@ -12,8 +13,8 @@ Predictor quant de ETFs + estrategia para cartera ficticia. 5 fases (ver README)
 - Números exactos: `data/meta/dataset_stats.json`.
 
 ## Decisiones clave
-- D1: Universo EEUU = cobertura global de clases de activo con un solo calendario/divisa (USD).
-  UCITS europeos: extensión opcional futura.
+- D1: Dos regiones separadas (`region=us|eu|all`): EEUU en USD, UCITS Xetra mayoritariamente EUR.
+  Fallback ISIN→otra plaza si el mnemónico Xetra no está en Yahoo. Ojo duplicados de índice entre regiones.
 - D2: Cliente Yahoo propio (sin crumb) para precios; yfinance sufría 429 en cookie/crumb.
   Cortesía: 2 hilos, pausa 0.35 s, respeta Retry-After. No evadir límites.
 - D3: Clasificación `asset_class`: Morningstar (quoteSummary) si disponible, si no reglas por nombre
