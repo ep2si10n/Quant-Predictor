@@ -1,0 +1,46 @@
+name,target,model,smooth,k,trend,scheme,vt,sleeves,dev_sharpe,dev_cagr,dev_maxdd,dev_turnover
+R0_two_level_momentum,t_rel,none,1,5,False,erc,None,"('equity', 'fixed_income', 'commodity', 'real_estate')",0.25258978553801165,0.020785466699366983,-0.1638901301358512,7.656036327529045
+R0_base,t_rel,lgbm,1,5,False,erc,None,"('equity', 'fixed_income', 'commodity', 'real_estate')",-0.07288990136040283,-0.007397507894499777,-0.26200504837434047,13.768737479418743
+R1_target=t_sharpe,t_sharpe,lgbm,1,5,False,erc,None,"('equity', 'fixed_income', 'commodity', 'real_estate')",0.12606074189127753,0.011508732363543883,-0.22648150184461358,14.097611900731806
+R1_target=t_cls,t_cls,lgbm,1,5,False,erc,None,"('equity', 'fixed_income', 'commodity', 'real_estate')",0.008945039867951672,0.0005639234350152122,-0.23626306151981324,14.064203392373015
+R1_target=t_cls_sharpe,t_cls_sharpe,lgbm,1,5,False,erc,None,"('equity', 'fixed_income', 'commodity', 'real_estate')",0.18541320387323013,0.01765026503563516,-0.25538239124328976,13.747506533386826
+R1_target=t_cls_rank,t_cls_rank,lgbm,1,5,False,erc,None,"('equity', 'fixed_income', 'commodity', 'real_estate')",0.09018646574144953,0.008550395446100811,-0.24180736827403648,14.008908750844821
+R1_model=ridge,t_cls_sharpe,ridge,1,5,False,erc,None,"('equity', 'fixed_income', 'commodity', 'real_estate')",0.13621410290811886,0.01336380238884538,-0.255243134076777,11.29199439378185
+R1_model=ens,t_cls_sharpe,ens,1,5,False,erc,None,"('equity', 'fixed_income', 'commodity', 'real_estate')",0.19398679775246294,0.01925797185610789,-0.251728813193855,12.987736481177897
+R1_model=none,t_cls_sharpe,none,1,5,False,erc,None,"('equity', 'fixed_income', 'commodity', 'real_estate')",0.25258978553801165,0.020785466699366983,-0.1638901301358512,7.656036327529045
+R1_smooth=3,t_cls_sharpe,none,3,5,False,erc,None,"('equity', 'fixed_income', 'commodity', 'real_estate')",0.25258978553801165,0.020785466699366983,-0.1638901301358512,7.656036327529045
+R1_smooth=6,t_cls_sharpe,none,6,5,False,erc,None,"('equity', 'fixed_income', 'commodity', 'real_estate')",0.25258978553801165,0.020785466699366983,-0.1638901301358512,7.656036327529045
+R1_k=3,t_cls_sharpe,none,1,3,False,erc,None,"('equity', 'fixed_income', 'commodity', 'real_estate')",0.20502833353248062,0.0173472740201015,-0.15275268573559675,9.066638972468049
+R1_k=10,t_cls_sharpe,none,1,10,False,erc,None,"('equity', 'fixed_income', 'commodity', 'real_estate')",0.21943960281506353,0.017690105537855993,-0.17468340777512759,6.2519643117055175
+R1_trend=True,t_cls_sharpe,none,1,5,True,erc,None,"('equity', 'fixed_income', 'commodity', 'real_estate')",0.3268660672112299,0.022208442386101535,-0.11601488826211614,6.453935210088282
+R1_scheme=ivol,t_cls_sharpe,none,1,5,True,ivol,None,"('equity', 'fixed_income', 'commodity', 'real_estate')",0.3785790140464766,0.024485356308113104,-0.11329899811256428,6.400075174071862
+R1_scheme=ew,t_cls_sharpe,none,1,5,True,ew,None,"('equity', 'fixed_income', 'commodity', 'real_estate')",0.2586640029572537,0.02287903919481149,-0.15018117401635667,6.158319435274327
+R1_vt=0.08,t_cls_sharpe,none,1,5,True,ivol,0.08,"('equity', 'fixed_income', 'commodity', 'real_estate')",0.4650935850548407,0.04165378141589238,-0.13212234676764079,10.797782845624532
+R1_vt=0.12,t_cls_sharpe,none,1,5,True,ivol,0.12,"('equity', 'fixed_income', 'commodity', 'real_estate')",0.3963308612566933,0.03989035798290086,-0.1505453089364811,11.893746943419217
+R1_sleeves=equ+fix+com+rea+alt,t_cls_sharpe,none,1,5,True,ivol,0.08,"('equity', 'fixed_income', 'commodity', 'real_estate', 'alternative')",0.43783386864591284,0.0356029903527435,-0.11524347027938375,10.247508448567606
+R1_sleeves=equ+fix+com,t_cls_sharpe,none,1,5,True,ivol,0.08,"('equity', 'fixed_income', 'commodity')",0.358928469222387,0.03169543050871804,-0.138650767068501,11.401629687265585
+R2_target=t_sharpe,t_sharpe,none,1,5,True,ivol,0.08,"('equity', 'fixed_income', 'commodity', 'real_estate')",0.4650935850548407,0.04165378141589238,-0.13212234676764079,10.797782845624532
+R2_target=t_cls,t_cls,none,1,5,True,ivol,0.08,"('equity', 'fixed_income', 'commodity', 'real_estate')",0.4650935850548407,0.04165378141589238,-0.13212234676764079,10.797782845624532
+R2_target=t_cls_rank,t_cls_rank,none,1,5,True,ivol,0.08,"('equity', 'fixed_income', 'commodity', 'real_estate')",0.4650935850548407,0.04165378141589238,-0.13212234676764079,10.797782845624532
+R2_model=ridge,t_cls_sharpe,ridge,1,5,True,ivol,0.08,"('equity', 'fixed_income', 'commodity', 'real_estate')",0.4342525931540889,0.034964627970056616,-0.14428002016030494,10.967593694916207
+R2_model=ens,t_cls_sharpe,ens,1,5,True,ivol,0.08,"('equity', 'fixed_income', 'commodity', 'real_estate')",0.4160441410657402,0.033907387855676374,-0.19137004277237357,13.337775147256961
+R2_smooth=3,t_cls_sharpe,none,3,5,True,ivol,0.08,"('equity', 'fixed_income', 'commodity', 'real_estate')",0.4650935850548407,0.04165378141589238,-0.13212234676764079,10.797782845624532
+R2_smooth=6,t_cls_sharpe,none,6,5,True,ivol,0.08,"('equity', 'fixed_income', 'commodity', 'real_estate')",0.4650935850548407,0.04165378141589238,-0.13212234676764079,10.797782845624532
+R2_k=3,t_cls_sharpe,none,1,3,True,ivol,0.08,"('equity', 'fixed_income', 'commodity', 'real_estate')",0.3597661865167285,0.033283151058149274,-0.15855516881996512,12.107090534372183
+R2_k=10,t_cls_sharpe,none,1,10,True,ivol,0.08,"('equity', 'fixed_income', 'commodity', 'real_estate')",0.5283726686699449,0.044731453451656744,-0.11551589632077608,9.685777187006163
+R2_scheme=ew,t_cls_sharpe,none,1,10,True,ew,0.08,"('equity', 'fixed_income', 'commodity', 'real_estate')",0.37157864200727475,0.031899950684666445,-0.11864471949125366,6.8832353569339695
+R2_vt=0.12,t_cls_sharpe,none,1,10,True,ivol,0.12,"('equity', 'fixed_income', 'commodity', 'real_estate')",0.4573736252146153,0.04414815077377843,-0.1509605039370061,10.61139899640138
+R2_sleeves=equ+fix+com+rea+alt,t_cls_sharpe,none,1,10,True,ivol,0.08,"('equity', 'fixed_income', 'commodity', 'real_estate', 'alternative')",0.47579866888208305,0.03808990634600384,-0.09872636247925626,9.299153142220861
+R2_sleeves=equ+fix+com,t_cls_sharpe,none,1,10,True,ivol,0.08,"('equity', 'fixed_income', 'commodity')",0.44607927534405506,0.03676670381362923,-0.11533801674963973,10.598400390102663
+R3_target=t_sharpe,t_sharpe,none,1,10,True,ivol,0.08,"('equity', 'fixed_income', 'commodity', 'real_estate')",0.5283726686699449,0.044731453451656744,-0.11551589632077608,9.685777187006163
+R3_target=t_cls,t_cls,none,1,10,True,ivol,0.08,"('equity', 'fixed_income', 'commodity', 'real_estate')",0.5283726686699449,0.044731453451656744,-0.11551589632077608,9.685777187006163
+R3_target=t_cls_rank,t_cls_rank,none,1,10,True,ivol,0.08,"('equity', 'fixed_income', 'commodity', 'real_estate')",0.5283726686699449,0.044731453451656744,-0.11551589632077608,9.685777187006163
+R3_model=ridge,t_cls_sharpe,ridge,1,10,True,ivol,0.08,"('equity', 'fixed_income', 'commodity', 'real_estate')",0.46370537310700544,0.03888670655688631,-0.15763302148030878,9.97740960160967
+R3_model=ens,t_cls_sharpe,ens,1,10,True,ivol,0.08,"('equity', 'fixed_income', 'commodity', 'real_estate')",0.4910427143065998,0.04000320457966011,-0.1583803068631664,12.39590662507383
+R3_smooth=3,t_cls_sharpe,none,3,10,True,ivol,0.08,"('equity', 'fixed_income', 'commodity', 'real_estate')",0.5283726686699449,0.044731453451656744,-0.11551589632077608,9.685777187006163
+R3_smooth=6,t_cls_sharpe,none,6,10,True,ivol,0.08,"('equity', 'fixed_income', 'commodity', 'real_estate')",0.5283726686699449,0.044731453451656744,-0.11551589632077608,9.685777187006163
+R3_k=3,t_cls_sharpe,none,1,3,True,ivol,0.08,"('equity', 'fixed_income', 'commodity', 'real_estate')",0.3597661865167285,0.033283151058149274,-0.15855516881996512,12.107090534372183
+R3_scheme=ew,t_cls_sharpe,none,1,10,True,ew,0.08,"('equity', 'fixed_income', 'commodity', 'real_estate')",0.37157864200727475,0.031899950684666445,-0.11864471949125366,6.8832353569339695
+R3_vt=0.12,t_cls_sharpe,none,1,10,True,ivol,0.12,"('equity', 'fixed_income', 'commodity', 'real_estate')",0.4573736252146153,0.04414815077377843,-0.1509605039370061,10.61139899640138
+R3_sleeves=equ+fix+com+rea+alt,t_cls_sharpe,none,1,10,True,ivol,0.08,"('equity', 'fixed_income', 'commodity', 'real_estate', 'alternative')",0.47579866888208305,0.03808990634600384,-0.09872636247925626,9.299153142220861
+R3_sleeves=equ+fix+com,t_cls_sharpe,none,1,10,True,ivol,0.08,"('equity', 'fixed_income', 'commodity')",0.44607927534405506,0.03676670381362923,-0.11533801674963973,10.598400390102663

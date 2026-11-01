@@ -14,3 +14,5 @@ graphify-out/.graphify_*
 graphify-out/memory/
 # Claude local
 .claude/settings.local.json
+data/processed/study_*
+data/processed/etf_prices_eu/
