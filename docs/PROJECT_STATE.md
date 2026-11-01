@@ -35,7 +35,15 @@ Predictor quant de ETFs + estrategia para cartera ficticia. 5 fases (ver README)
   clasificadores de régimen (AUC~0,5), combos elegidos en dev (PBO 0,60).
 - Decisión F5: modelo = 60/40 + gestión de volatilidad HAR, L=1.
 
-## Próximo: Fase 5 — exportar modelo (paquete + señal mensual) e informe matemático.
+## Giro de objetivo (usuario): cartera simulada de ETFs que intente BATIR al S&P 500 ✅
+- Entrenar con datos diarios; en producción valorar minuto a minuto vs SPY (para gráfico en tiempo real).
+- `src/quantpred/relative/`: recompensa f(Δ)=Δ+κ·max(Δ,0)−λ·min(Δ,0)² sobre Δ a 21 días (κ=0,5, λ=50,
+  calibrada para no premiar ruido), política softmax núcleo-satélite entrenada maximizando f (gradiente exacto).
+- `src/quantpred/live/`: LiveEngine (snapshot diario, igual al entrenamiento) + SimulatedPortfolio.on_tick.
+- Resultado: reports/RELATIVE_SUMMARY.md. Recomendado: models/relative_policy_core_satellite.json
+  (test: 22,4% vs 16,9% SPY, TE 9,9%, IR 0,57; consultado post-hoc, avisado).
+
+## Próximo: Fase 5 — informe matemático + empaquetado del modelo (descargable).
 
 ## Herramientas agente
 Graphify (`graphify query`), Caveman (respuestas cortas). Hook SessionStart reinstala deps.
