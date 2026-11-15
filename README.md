@@ -80,6 +80,10 @@ carries a selection caveat. Survivorship bias, real costs above 2 bp and a singl
 A reward-design lesson is in the report: with a convex reward the policy first learned to reward volatility
 itself (option effect), which was fixed and is covered by a test in `tests/test_relative.py`.
 
+
+<p align="center"><img src="reports/phase4_equity.png" alt="Equity curves, development vs out-of-sample test" width="900"></p>
+<p align="center"><sub>Growth of 1 unit, log scale: development 2008-2018 (left) and the single out-of-sample test 2019-2026 (right).</sub></p>
+
 ## Methodology
 
 - **Universe** ([`docs/DATA.md`](docs/DATA.md)): about 5,800 US-listed ETFs/ETNs (NASDAQ Trader list), about
