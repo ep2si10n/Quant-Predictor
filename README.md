@@ -193,6 +193,16 @@ data/          processed datasets and metadata (see below)
 Further factor and data-source references are listed in [`docs/RESEARCH.md`](docs/RESEARCH.md) and
 [`docs/DATA.md`](docs/DATA.md).
 
+## Contributing
+
+Issues and pull requests are welcome. Before opening a PR, please run the checks locally:
+
+```bash
+pip install -r requirements.txt
+ruff check .
+python -m pytest -q tests
+```
+
 ## License
 
 MIT, see [LICENSE](LICENSE).
