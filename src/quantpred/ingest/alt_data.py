@@ -15,7 +15,6 @@ import time
 import zipfile
 from dataclasses import dataclass
 
-import numpy as np
 import pandas as pd
 import requests
 
@@ -205,7 +204,7 @@ def cboe() -> pd.DataFrame:
         try:
             txt = _get(f"https://cdn.cboe.com/resources/options/volume_and_call_put_ratios/{f}.csv").decode()
             lines = txt.splitlines()
-            h = next(i for i, l in enumerate(lines) if l.upper().startswith("DATE"))
+            h = next(i for i, ln in enumerate(lines) if ln.upper().startswith("DATE"))
             df = pd.read_csv(io.StringIO("\n".join(lines[h:])))
             df.columns = [c.strip().upper() for c in df.columns]
             pc = [c for c in df.columns if "RATIO" in c][0]

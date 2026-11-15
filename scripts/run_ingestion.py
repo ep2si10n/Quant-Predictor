@@ -15,7 +15,6 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
-import pandas as pd  # noqa: E402
 
 from quantpred.config import META, PROCESSED, RAW  # noqa: E402
 from quantpred.ingest import macro, metadata, prices, quality, store, universe, universe_eu  # noqa: E402

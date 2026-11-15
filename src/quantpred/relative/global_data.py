@@ -111,9 +111,9 @@ def monthly_universe(P, DV, dates, n_us, n_eu, cls, eu):
             continue
         last = key
         ok = (age.loc[d] >= 252) & (vol252.loc[d] >= 0.03) & liq.loc[d].notna() & ok_cls
-        l = liq.loc[d][ok].drop("SPY", errors="ignore")
-        us = l[~is_eu.reindex(l.index)].sort_values(ascending=False).index[:n_us - 1]
-        ue = l[is_eu.reindex(l.index)].sort_values(ascending=False).index[:n_eu]
+        liq_d = liq.loc[d][ok].drop("SPY", errors="ignore")
+        us = liq_d[~is_eu.reindex(liq_d.index)].sort_values(ascending=False).index[:n_us - 1]
+        ue = liq_d[is_eu.reindex(liq_d.index)].sort_values(ascending=False).index[:n_eu]
         members[key] = ["SPY"] + list(us) + list(ue)
     return members
 

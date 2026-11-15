@@ -16,8 +16,8 @@ sys.path.insert(0, str(ROOT / "scripts"))
 
 import numpy as np  # noqa: E402
 import pandas as pd  # noqa: E402
-
 import train_relative_v2 as v2  # noqa: E402
+
 from quantpred.config import PROCESSED  # noqa: E402
 from quantpred.relative.global_data import regime_series  # noqa: E402
 from quantpred.relative.progress import Progress, downsample  # noqa: E402
@@ -152,7 +152,6 @@ def main():
             "state": ["1", "vix_z", "spy21_z", "abs_spy21_z"], "trained_until": str(dd.dates[-1].date()),
             "band": best["band"]}
     (v2.MODELS / "relative_policy_v3.json").write_text(json.dumps(prod))
-    v2curve = None
     prog.final({"selected": best, "metrics": [{"strategy": k, **v} for k, v in out.items()],
                 "curves": downsample(D, curves, every=3), "runtime_min": round((time.time() - t0) / 60, 1)})
     print(pd.DataFrame(out).T[["CAGR", "Active_ann", "TE", "IR", "MaxDD", "MaxRelDD", "Hit21d", "Reward21_bp"]]

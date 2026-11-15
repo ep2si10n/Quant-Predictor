@@ -21,7 +21,7 @@ from dataclasses import dataclass, field
 import numpy as np
 import pandas as pd
 
-from quantpred.relative.data import FEATURES, cross_section, feature_frames, select_universe
+from quantpred.relative.data import cross_section, feature_frames, select_universe
 from quantpred.relative.policy import Policy
 
 

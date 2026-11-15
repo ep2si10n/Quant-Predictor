@@ -127,6 +127,7 @@ def fetch_summaries(symbols: list[str], workers: int = 2, pause: float = 0.25,
                     max_consecutive_429: int = 20) -> pd.DataFrame:
     """quoteSummary con caché incremental (data/raw/meta_cache.jsonl). Para si Yahoo limita."""
     import json
+
     from quantpred.config import RAW
     from quantpred.ingest.yahoo import RateLimited, quote_summary
     cache_f = RAW / "meta_cache.jsonl"
@@ -134,7 +135,8 @@ def fetch_summaries(symbols: list[str], workers: int = 2, pause: float = 0.25,
     done = {}
     if cache_f.exists():
         for line in cache_f.read_text().splitlines():
-            r = json.loads(line); done[r["yahoo"]] = r
+            r = json.loads(line)
+            done[r["yahoo"]] = r
     todo = [s for s in symbols if s not in done]
     print(f"  quoteSummary: {len(done)} en caché, {len(todo)} pendientes", flush=True)
     streak = 0
@@ -143,7 +145,7 @@ def fetch_summaries(symbols: list[str], workers: int = 2, pause: float = 0.25,
         time.sleep(pause)
         try:
             return _parse_summary(sym, quote_summary(sym)), None
-        except RateLimited as e:
+        except RateLimited:
             return None, "429"
         except Exception as e:
             return {"yahoo": sym, "error": str(e)[:120]}, None

@@ -25,7 +25,6 @@ from sklearn.neural_network import MLPClassifier  # noqa: E402
 from sklearn.pipeline import make_pipeline  # noqa: E402
 from sklearn.preprocessing import StandardScaler  # noqa: E402
 
-from quantpred.config import PROCESSED  # noqa: E402
 from quantpred.research import regime as rg  # noqa: E402
 from quantpred.research.features import build_panel  # noqa: E402
 from quantpred.research.metrics import deflated_sharpe, pbo, perf, sharpe_per_period  # noqa: E402

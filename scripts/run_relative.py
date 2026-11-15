@@ -91,7 +91,7 @@ def main():
     crypto = np.vectorize(lambda t: ac.get(t, "") in EXCLUDE)(d.tickers)
     d.mask &= ~crypto
     d.R = np.where(d.mask, d.R, 0.0)
-    I = {k: idx_of(d, *v) for k, v in SPLITS.items()}
+    IDX = {k: idx_of(d, *v) for k, v in SPLITS.items()}
     rows, trials = [], []
 
     # ---------- selección en validación ----------
@@ -103,9 +103,9 @@ def main():
     best, best_val = None, -np.inf
     for kind, alpha, rp_name, rp, gamma, tcost in grid:
         pol = Policy(FEATURES, kind=kind, alpha=alpha, cost=tcost, reward_params=rp, hidden=16,
-                     gamma=gamma).fit(d, I["train"])
-        Wv = pol.weights(d.X[I["val"]], d.mask[I["val"]])
-        mv = metrics(simulate(Wv, d, I["val"], COST), d.rf[I["val"]], "x", "val")
+                     gamma=gamma).fit(d, IDX["train"])
+        Wv = pol.weights(d.X[IDX["val"]], d.mask[IDX["val"]])
+        mv = metrics(simulate(Wv, d, IDX["val"], COST), d.rf[IDX["val"]], "x", "val")
         name = f"pol_{kind}_a{alpha:g}_{rp_name}"
         trials.append({"name": name, **{k: mv[k] for k in ("Reward21_bp", "Active_ann", "IR", "TE")}})
         print(f"  {name:34s} val reward21={mv['Reward21_bp']:.1f}bp activo={mv['Active_ann']:.3%} "
@@ -119,11 +119,11 @@ def main():
     print("mejor en validación:", best[:3], flush=True)
 
     # ---------- reentrenar train+val y evaluar test (una vez) ----------
-    trval = np.concatenate([I["train"], I["val"]])
+    trval = np.concatenate([IDX["train"], IDX["val"]])
     pol = Policy(FEATURES, kind=kind, alpha=alpha, cost=tcost, reward_params=rp, hidden=16,
                  gamma=gamma).fit(d, trval)
     for period in ("train", "val", "test"):
-        ix = I[period]
+        ix = IDX[period]
         Wp = (Policy.from_dict(pol.to_dict()) if period == "test" else pol).weights(d.X[ix], d.mask[ix])
         for nm, W in [("POLITICA_diaria", Wp), ("POLITICA_semanal", hold_every(Wp, 5)),
                       ("SPY", baseline_weights(d, ix, "spy")), ("EW_80", baseline_weights(d, ix, "ew")),
@@ -136,7 +136,7 @@ def main():
     res.to_csv(REPORTS / "relative_results.csv")
 
     # pesos medios en test (interpretación)
-    ix = I["test"]
+    ix = IDX["test"]
     avg = pd.Series(dtype=float)
     for t in range(len(ix)):
         for i in range(test_W.shape[1]):

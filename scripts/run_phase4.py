@@ -18,12 +18,12 @@ sys.path.insert(0, str(ROOT / "src"))
 sys.path.insert(0, str(ROOT / "scripts"))
 
 import pandas as pd  # noqa: E402
+from run_study import DEV, TEST, models  # noqa: E402
 
 from quantpred.research import backtest as bt  # noqa: E402
 from quantpred.research import phase4 as p4  # noqa: E402
 from quantpred.research.features import build_panel  # noqa: E402
 from quantpred.research.metrics import deflated_sharpe, pbo, perf, sharpe_per_period  # noqa: E402
-from run_study import DEV, TEST, models  # noqa: E402
 
 REPORTS = ROOT / "reports"
 MIN_GAIN = 0.03
