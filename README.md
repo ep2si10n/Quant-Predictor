@@ -169,7 +169,7 @@ data/          processed datasets and metadata (see below)
 - Short history for most ETFs; long-history index and futures proxies partly compensate.
 - Revised macro series are used without ALFRED vintages, leaving some residual look-ahead.
 - Yahoo `adj_close` is an approximate total return; real costs for illiquid ETFs exceed the 2-5 bp assumed.
-- A single test period (2019-2026) with a strong US equity run; SPY beats every robust strategy in return terms.
+- A single test period (2019-2026) with a strong US equity run; over that period SPY out-returned the strategies selected as robust (for example the volatility-managed 60/40), which win on drawdown rather than on return.
 - Some reports, docs and script docstrings are written in Spanish.
 
 ## Roadmap
