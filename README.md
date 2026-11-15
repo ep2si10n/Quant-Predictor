@@ -155,12 +155,13 @@ data/          processed datasets and metadata (see below)
 - **Sources**: NASDAQ Trader (US universe), Deutsche Boerse Xetra instrument list (EU universe), Yahoo Finance
   (prices), FRED (macro), and public academic data libraries (Ken French, AQR, Goyal-Welch, Shiller) plus Cboe,
   CFTC, NY Fed, Philadelphia Fed, SF Fed and others. Details and rationale per source: [`docs/DATA.md`](docs/DATA.md).
-- **Size**: `data/` is about 250 MB of zstd-compressed parquet, committed to the repository on purpose so results
-  are reproducible without re-downloading. Raw downloads (`data/raw/`) are ignored.
+- **Size**: `data/` holds about 250 MB of zstd-compressed parquet. The parquet files are stored with
+  [Git LFS](https://git-lfs.com) so results are reproducible without re-downloading, while the Git history stays
+  light. Raw downloads (`data/raw/`) are ignored.
+- **Getting the data**: install Git LFS before cloning (`git lfs install`), or run `git lfs pull` in an existing
+  clone. To clone code only, set `GIT_LFS_SKIP_SMUDGE=1`.
 - **Regenerate**: run the ingestion commands in [Usage](#usage). Yahoo data changes over time, so a fresh download
   will not match the committed snapshot exactly.
-- **Alternatives to committing the data** (not applied): Git LFS, a GitHub release asset, or an external bucket
-  with a download script.
 
 ## Limitations
 
