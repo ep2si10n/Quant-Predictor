@@ -5,16 +5,15 @@ __pycache__/
 .pytest_cache/
 .ipynb_checkpoints/
 *.egg-info/
-# Datos crudos (regenerables con scripts/run_ingestion.py)
+# Raw data (regenerable with scripts/run_ingestion.py)
 data/raw/
-# Graphify: se versiona graph.json + GRAPH_REPORT.md; caches y html no
-graphify-out/cache/
-graphify-out/*.html
-graphify-out/.graphify_*
-graphify-out/memory/
-# Claude local
-.claude/settings.local.json
+# Local AI tooling (not part of the project)
+.claude/
+CLAUDE.md
+graphify-out/
+.graphifyignore
 data/processed/study_*
 reports/training_progress.json
 reports/training_progress.tmp
 reports/live_feed.json
+.ruff_cache/

@@ -1,6 +1,0 @@
-data/
-graphify-out/
-.claude/
-*.parquet
-*.csv
-*.json
